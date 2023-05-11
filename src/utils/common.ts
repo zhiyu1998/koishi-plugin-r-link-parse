@@ -8,14 +8,14 @@ import * as path from 'path';
  * @returns {Promise<void>}
  */
 async function checkAndRemoveFile(file: string): Promise<void> {
-    try {
-        await fs.promises.access(file);
-        await fs.promises.unlink(file);
-    } catch (err) {
-        if (err.code !== 'ENOENT') {
-            throw err;
-        }
+  try {
+    await fs.promises.access(file);
+    await fs.promises.unlink(file);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      throw err;
     }
+  }
 }
 
 /**
@@ -24,15 +24,15 @@ async function checkAndRemoveFile(file: string): Promise<void> {
  * @returns {Promise<void>}
  */
 async function mkdirIfNotExists(dir: string): Promise<void> {
-    try {
-        await fs.promises.access(dir);
-    } catch (err) {
-        if (err.code === 'ENOENT') {
-            await fs.promises.mkdir(dir, { recursive: true });
-        } else {
-            throw err;
-        }
+  try {
+    await fs.promises.access(dir);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      await fs.promises.mkdir(dir, {recursive: true});
+    } else {
+      throw err;
     }
+  }
 }
 
 /**
@@ -112,7 +112,7 @@ async function downloadVideo(url: string, filePath: string, headers = null) {
   const userAgent =
     "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Mobile Safari/537.36";
   const axiosConfig: AxiosRequestConfig = {
-    headers: headers || { "User-Agent": userAgent },
+    headers: headers || {"User-Agent": userAgent},
     responseType: "stream",
   };
 
@@ -133,4 +133,4 @@ async function downloadVideo(url: string, filePath: string, headers = null) {
   }
 }
 
-export { checkAndRemoveFile, mkdirIfNotExists, stripQueryParams, downloadImg, downloadVideo }
+export {checkAndRemoveFile, mkdirIfNotExists, stripQueryParams, downloadImg, downloadVideo}

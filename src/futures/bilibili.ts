@@ -1,8 +1,8 @@
-import { segment, Session } from 'koishi'
-import { getDynamic, getVideoInfo } from '../utils/bilibili-info'
+import {segment, Session} from 'koishi'
+import {getDynamic, getVideoInfo} from '../utils/bilibili-info'
 import {TEN_THOUSAND, TMP_PATH} from '../constant'
-import { downBili, getDownloadUrl } from '../utils/bilibili-core'
-import { mkdirIfNotExists } from '../utils/common'
+import {downBili, getDownloadUrl} from '../utils/bilibili-core'
+import {mkdirIfNotExists} from '../utils/common'
 
 
 export default async function bili(session: Session) {
@@ -51,9 +51,9 @@ export default async function bili(session: Session) {
   // 视频信息获取例子：http://api.bilibili.com/x/web-interface/view?bvid=BV1hY411m7cB
   // 请求视频信息
   const videoInfo = await getVideoInfo(url);
-  const { title, pic, desc, duration, dynamic, stat, aid, cid, pages } = videoInfo;
+  const {title, pic, desc, duration, dynamic, stat, aid, cid, pages} = videoInfo;
   // 视频信息
-  let { view, danmaku, reply, favorite, coin, share, like } = stat;
+  let {view, danmaku, reply, favorite, coin, share, like} = stat;
   // 数据处理
   const dataProcessing = data => {
     return Number(data) >= TEN_THOUSAND ? (data / TEN_THOUSAND).toFixed(1) + "万" : data;
