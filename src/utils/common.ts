@@ -1,3 +1,4 @@
+import axios, {AxiosRequestConfig} from 'axios'
 import fs from "node:fs";
 
 /**
@@ -43,4 +44,56 @@ function stripQueryParams(url: string): string {
   return urlObj.toString();
 }
 
-export { checkAndRemoveFile, mkdirIfNotExists, stripQueryParams }
+/**
+ * 下载一张网络图片(自动以url的最后一个为名字)
+ * @param img
+ * @param dir
+ * @param fileName
+ * @param isProxy
+ * @returns {Promise<unknown>}
+ */
+async function downloadImg(img, dir, fileName = "", isProxy = false) {
+  if (fileName === "") {
+    fileName = img.split("/").pop();
+  }
+  const filepath = `${dir}/${fileName}`;
+  await mkdirIfNotExists(dir)
+  const writer = fs.createWriteStream(filepath);
+  const axiosConfig: AxiosRequestConfig = {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Mobile Safari/537.36",
+    },
+    responseType: "stream",
+  };
+
+  // if (isProxy) {
+  //   axiosConfig.httpAgent = tunnel.httpOverHttp({
+  //     proxy: { host: this.proxyAddr, port: this.proxyPort },
+  //   });
+  //   axiosConfig.httpsAgent = tunnel.httpOverHttp({
+  //     proxy: { host: this.proxyAddr, port: this.proxyPort },
+  //   });
+  // }
+  try {
+    const res = await axios.get(img, axiosConfig);
+    res.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on("finish", () => {
+        writer.close(() => {
+          resolve(filepath);
+        });
+      });
+      writer.on("error", err => {
+        fs.unlink(filepath, () => {
+          reject(err);
+        });
+      });
+    });
+  } catch (err) {
+    console.error("图片下载失败");
+  }
+}
+
+export { checkAndRemoveFile, mkdirIfNotExists, stripQueryParams, downloadImg }
