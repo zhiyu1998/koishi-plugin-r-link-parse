@@ -1,6 +1,6 @@
 import {Session, segment} from 'koishi'
 import {TMP_PATH, XHS_CK} from "../constant";
-import {downloadImg} from "../utils/common";
+import {downloadImg, downloadVideo} from "../utils/common";
 
 
 export default async function xhs(session: Session) {
@@ -39,7 +39,7 @@ export default async function xhs(session: Session) {
     let imgPromise = [];
     if (type === "video") {
       const url = noteData.video.url;
-      this.downloadVideo(url).then(path => {
+      downloadVideo(url, `${downloadPath}temp.mp4`).then(path => {
         session.send(segment.video(`file:///${path}/temp.mp4`));
       });
       return true;
