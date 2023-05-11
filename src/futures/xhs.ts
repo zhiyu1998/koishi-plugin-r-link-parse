@@ -1,9 +1,7 @@
 import {Session, segment} from 'koishi'
-import {XHS_CK} from "../constant";
-import * as path from 'path'
+import {TMP_PATH, XHS_CK} from "../constant";
 import {downloadImg} from "../utils/common";
 
-const currentPath = path.resolve(__dirname) + '/tmp/';
 
 export default async function xhs(session: Session) {
   // 正则说明：匹配手机链接、匹配PC链接
@@ -22,7 +20,7 @@ export default async function xhs(session: Session) {
   } else {
     id = /explore\/(\w+)/.exec(msgUrl)?.[1] || /discovery\/item\/(\w+)/.exec(msgUrl)?.[1];
   }
-  const downloadPath = `${currentPath}${session.userId || session.guildId}/`;
+  const downloadPath = `${TMP_PATH}${session.userId || session.guildId}/`;
   // 获取信息
   fetch(`https://www.xiaohongshu.com/discovery/item/${id}`, {
     headers: {

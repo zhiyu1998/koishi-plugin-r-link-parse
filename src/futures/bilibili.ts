@@ -1,9 +1,9 @@
 import { segment, Session } from 'koishi'
 import { getDynamic, getVideoInfo } from '../utils/bilibili-info'
-import { TEN_THOUSAND } from '../constant'
+import {TEN_THOUSAND, TMP_PATH} from '../constant'
 import { downBili, getDownloadUrl } from '../utils/bilibili-core'
 import { mkdirIfNotExists } from '../utils/common'
-import * as path from 'path'
+
 
 export default async function bili(session: Session) {
   // koishi机器人 正则匹配
@@ -70,7 +70,7 @@ export default async function bili(session: Session) {
   let biliInfo = [segment.image(pic), `识别：哔哩哔哩：${title}`, combineContent]
   session.send(biliInfo);
   // 使用Node.js找到当前文件位置
-  const currentPath = path.resolve(__dirname) + '/tmp/' + `${session.userId || session.guildId}/`;
+  const currentPath = TMP_PATH + `${session.userId || session.guildId}/`;
   // 下载视频
   await mkdirIfNotExists(currentPath);
   // 下载文件 & 发送

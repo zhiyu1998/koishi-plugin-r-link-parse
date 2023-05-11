@@ -1,5 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios'
 import fs from "node:fs";
+import * as path from 'path';
 
 /**
  * 检查文件是否存在并且删除
@@ -96,4 +97,40 @@ async function downloadImg(img, dir, fileName = "", isProxy = false) {
   }
 }
 
-export { checkAndRemoveFile, mkdirIfNotExists, stripQueryParams, downloadImg }
+/**
+ * 工具：根URL据下载视频 / 音频
+ * @param url       下载地址
+ * @param filePath  下载路径
+ * @param headers   覆盖头节点
+ * @returns {Promise<unknown>}
+ */
+async function downloadVideo(url: string, filePath: string, headers = null) {
+  const groupPath = path.dirname(filePath);
+
+  await mkdirIfNotExists(groupPath);
+
+  const userAgent =
+    "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Mobile Safari/537.36";
+  const axiosConfig: AxiosRequestConfig = {
+    headers: headers || { "User-Agent": userAgent },
+    responseType: "stream",
+  };
+
+  try {
+    await checkAndRemoveFile(filePath);
+
+    const res = await axios.get(url, axiosConfig);
+    console.info(`开始下载: ${url}`);
+    const writer = fs.createWriteStream(filePath);
+    res.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on("finish", () => resolve(groupPath));
+      writer.on("error", reject);
+    });
+  } catch (err) {
+    console.error("下载视频发生错误！");
+  }
+}
+
+export { checkAndRemoveFile, mkdirIfNotExists, stripQueryParams, downloadImg, downloadVideo }
