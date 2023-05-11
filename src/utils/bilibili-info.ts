@@ -2,7 +2,6 @@ import axios from 'axios'
 
 async function getVideoInfo(url: string) {
     const baseVideoInfo = "http://api.bilibili.com/x/web-interface/view";
-    console.log(url);
 
     const videoId = /video\/[^\?\/ ]+/.exec(url)[0].split("/")[1];
     // 获取视频信息，然后发送

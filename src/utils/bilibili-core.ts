@@ -3,7 +3,6 @@ import axios from 'axios'
 import child_process from 'node:child_process'
 import util from "util";
 import _ from "lodash";
-import { type } from "node:os";
 
 
 async function downloadBFile(url, fullFileName, progressCallback) {
@@ -105,33 +104,33 @@ async function mergeFileToMp4(vFullFileName, aFullFileName, outputFileName, shou
  * @param audioUrl
  * @returns {Promise<unknown>}
 */
-async function downBili(title: string, videoUrl: string, audioUrl: string) {
-    return Promise.all([
-        downloadBFile(
-            videoUrl,
-            title + "-video.m4s",
-            _.throttle(
-                value =>
-                    console.info("视频下载进度", {
-                        data: value,
-                    }),
-                1000,
-            ),
-        ),
-        downloadBFile(
-            audioUrl,
-            title + "-audio.m4s",
-            _.throttle(
-                value =>
-                    console.info("音频下载进度", {
-                        data: value,
-                    }),
-                1000,
-            ),
-        ),
-    ]).then(() => {
-        return mergeFileToMp4(title + "-video.m4s", title + "-audio.m4s", `${title}.mp4`);
-    });
+function downBili(title: string, videoUrl: string, audioUrl: string) {
+  return Promise.all([
+      downloadBFile(
+          videoUrl,
+          title + "-video.m4s",
+          _.throttle(
+              value =>
+                  console.info("视频下载进度", {
+                      data: value,
+                  }),
+              1000,
+          ),
+      ),
+      downloadBFile(
+          audioUrl,
+          title + "-audio.m4s",
+          _.throttle(
+              value =>
+                  console.info("音频下载进度", {
+                      data: value,
+                  }),
+              1000,
+          ),
+      ),
+  ]).then(() => {
+      return mergeFileToMp4(title + "-video.m4s", title + "-audio.m4s", `${title}.mp4`);
+  });
 }
 
 export { downBili, getDownloadUrl }

@@ -33,4 +33,14 @@ async function mkdirIfNotExists(dir: string): Promise<void> {
     }
 }
 
-export { checkAndRemoveFile, mkdirIfNotExists }
+/**
+ * 删除url多余查询参数
+ * @param url
+ */
+function stripQueryParams(url: string): string {
+  const urlObj = new URL(url);
+  urlObj.search = "";
+  return urlObj.toString();
+}
+
+export { checkAndRemoveFile, mkdirIfNotExists, stripQueryParams }
