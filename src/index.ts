@@ -6,8 +6,6 @@ import acfun from "./futures/acfun";
 
 export const name = 'r-link-parse'
 
-export interface Config { }
-
 const platforms = [
   {
     regex: /(bilibili.com|b23.tv|t.bilibili.com)/i,
@@ -26,6 +24,8 @@ const platforms = [
     handler: acfun,
   },
 ];
+
+export interface Config { }
 
 export const Config: Schema<Config> = Schema.object({})
 

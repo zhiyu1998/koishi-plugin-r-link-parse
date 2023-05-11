@@ -1,7 +1,13 @@
 {
   "name": "koishi-plugin-r-link-parse",
-  "description": "",
-  "version": "0.0.1",
+  "description": "基于koishi机器人的链接分享解析视频、图片链接/小程序插件，支持：tiktok、bilibili、xhs、acfun！",
+  "homepage": "https://github.com/zhiyu1998",
+  "author": "zhiyu1998",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhiyu1998/koishi-plugin-r-link-parse.git"
+  },
+  "version": "1.0.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
