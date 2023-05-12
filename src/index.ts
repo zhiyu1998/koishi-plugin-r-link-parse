@@ -6,7 +6,7 @@ import acfun from "./futures/acfun";
 
 export const name = 'r-link-parse'
 
-const platforms = [
+const commands = [
   {
     regex: /(bilibili.com|b23.tv|t.bilibili.com)/i,
     handler: bili,
@@ -25,17 +25,27 @@ const platforms = [
   },
 ];
 
-export interface Config { }
+export interface Config {
+  gptEngineKey: string,
+  biliSession: string,
+}
 
-export const Config: Schema<Config> = Schema.object({})
+export const Config: Schema<Config> = Schema.object({
+  gptEngineKey: Schema.string().default(""),
+  biliSession: Schema.string().default("")
+})
 
-export function apply(ctx: Context) {
+export function apply(ctx: Context, config:Config) {
   ctx.middleware((session, next) => {
     const msg = session.content;
-    const platform = platforms.find(({ regex }) => regex.test(msg));
+    const command = commands.find(({ regex }) => regex.test(msg));
 
-    if (platform) {
-      platform.handler(session);
+    if (command) {
+      // 构造参数传入处理
+      command.handler({
+        session,
+        config
+      });
     }
   });
 }

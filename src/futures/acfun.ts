@@ -2,10 +2,11 @@ import {segment, Session} from 'koishi'
 import {mkdirIfNotExists} from "../utils/common";
 import {parseUrl, parseM3u8, mergeAcFileToMp4, downloadM3u8Videos} from '../utils/acfun-core'
 import {TMP_PATH} from "../constant";
+import {FutureParams} from "../types";
 
 
-export default async function acfun(session: Session) {
-
+export default async function acfun(futureParams: FutureParams) {
+  const {session} = futureParams;
   const path = `${TMP_PATH}${session.userId||session.guildId}/temp/`;
   await mkdirIfNotExists(path);
 

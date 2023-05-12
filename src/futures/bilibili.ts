@@ -1,11 +1,15 @@
-import {segment, Session} from 'koishi'
+import {segment} from 'koishi'
 import {getDynamic, getVideoInfo} from '../utils/bilibili-info'
 import {TEN_THOUSAND, TMP_PATH} from '../constant'
 import {downBili, getDownloadUrl} from '../utils/bilibili-core'
 import {mkdirIfNotExists} from '../utils/common'
+import {FutureParams} from "../types";
+import {getBiliGptInputText} from "../utils/bilibili-summary";
+import GPT from "../utils/gpt-engine";
 
 
-export default async function bili(session: Session) {
+export default async function bili(futureParams: FutureParams) {
+  const {session, config} = futureParams;
   // koishi机器人 正则匹配
   const urlRex = /(?:https?:\/\/)?www\.bilibili\.com\/[A-Za-z\d._?%&+\-=\/#]*/g;
   const bShortRex = /(http:|https:)\/\/b23.tv\/[A-Za-z\d._?%&+\-=\/#]*/g;
@@ -89,5 +93,31 @@ export default async function bili(session: Session) {
       console.error(err);
       session.send("解析失败：合并视频失败，重试一下！");
     });
+  // 总结
+  const summary = await getBiliSummary(videoInfo, config.biliSession, config.gptEngineKey);
+  console.log("总结：" + summary)
+  summary && session.send(summary);
 };
 
+/**
+ * 哔哩哔哩总结
+ * @returns Promise{string}
+ * @param videoInfo
+ * @param biliSession
+ * @param key
+ */
+async function getBiliSummary(videoInfo, biliSession?, key?): Promise<string>  {
+  if (biliSession && key) {
+    try {
+      const prompt = await getBiliGptInputText(videoInfo, biliSession);
+      const gpt = new GPT(key);
+      // 暂时不设计上下文
+      return await gpt.sendMessage(prompt);
+    } catch (err) {
+      console.error("总结失败，可能是没有弹幕或者网络问题！\n", err);
+      return ""
+    }
+  } else {
+    return ""
+  }
+}

@@ -44,6 +44,30 @@
   </summary>
 </details>
 
+## 🤓 Q&A
+
+<details>
+  <summary>FFmpeg支持</summary>
+  <blockquote>
+      ubuntu sudo apt-get install ffmpeg
+      <br>
+      其他linux参考（群友推荐）：https://gitee.com/baihu433/ffmpeg
+      <br>
+      Windows 参考：https://www.jianshu.com/p/5015a477de3c
+  </blockquote>
+</details>
+
+<details>
+  <summary>GPT引擎支持（主要用于哔哩哔哩总结）</summary>
+  <summary>目前也没有比较好的解决方案，如果使用官方每次都要过期都要去复制一下accesskey（其实已经写好了，只是没用这个解决方案），如果你有解决方案欢迎issue</summary>
+  <summary>在koishi面板主要填写两个内容：1. 哔哩哔哩session 2. 国内软件提供的key（1块钱一个月）</summary>
+  <a href="https://www.bilibili.com/read/cv12349604">点击进入session获取方法</a>
+  <br>
+  <a href="https://ai.aigcfun.com/">点击进入国内GPT解决方案</a>
+  <br>
+  <summary>有了这两个就可以去面板填写就可以使用总结了，当然如果你不用不填也没关系</summary>
+</details>
+
 ## 🦸‍♀️ 未来开发的功能
 - [ ] 支持更多的链接解析
 

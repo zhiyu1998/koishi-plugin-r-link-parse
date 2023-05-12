@@ -1,9 +1,11 @@
 import {Session, segment} from 'koishi'
 import {TMP_PATH, XHS_CK} from "../constant";
 import {downloadImg, downloadVideo} from "../utils/common";
+import {FutureParams} from "../types";
 
 
-export default async function xhs(session: Session) {
+export default async function xhs(futureParams: FutureParams) {
+  const {session} = futureParams;
   // 正则说明：匹配手机链接、匹配PC链接
   const msgMatch = session.content.match(/(http:|https:)\/\/(xhslink|xiaohongshu).com\/[A-Za-z\d._?%&+\-=\/#@]*/)
     || session.content.match(/(http:|https:)\/\/www\.xiaohongshu\.com\/explore\/(\w+)/);

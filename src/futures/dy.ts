@@ -4,8 +4,10 @@ import _ from 'lodash'
 import {DY_TYPE_MAP, TMP_PATH} from "../constant";
 import {downloadVideo} from "../utils/common";
 import * as xBogus from "../utils/x-bogus.cjs";
+import {FutureParams} from "../types";
 
-export default async function douyin(session: Session) {
+export default async function douyin(futureParams: FutureParams) {
+  const {session} = futureParams;
   const urlRex = /(http:|https:)\/\/v.douyin.com\/[A-Za-z\d._?%&+\-=\/#]*/g;
   const douUrl = urlRex.exec(session.content.trim())[0];
 
