@@ -3,9 +3,10 @@ import {getDynamic, getVideoInfo} from '../utils/bilibili-info'
 import {TEN_THOUSAND, TMP_PATH} from '../constant'
 import {downBili, getDownloadUrl} from '../utils/bilibili-core'
 import {mkdirIfNotExists} from '../utils/common'
-import {FutureParams} from "../types";
+import {FutureParams, VideoInfo} from "../types";
 import {getBiliGptInputText} from "../utils/bilibili-summary";
 import GPT from "../utils/gpt-engine";
+import querystring from "querystring";
 
 
 export default async function bili(futureParams: FutureParams) {
@@ -54,7 +55,7 @@ export default async function bili(futureParams: FutureParams) {
   }
   // 视频信息获取例子：http://api.bilibili.com/x/web-interface/view?bvid=BV1hY411m7cB
   // 请求视频信息
-  const videoInfo = await getVideoInfo(url);
+  const videoInfo: VideoInfo = await getVideoInfo(url);
   const {title, pic, desc, duration, dynamic, stat, aid, cid, pages} = videoInfo;
   // 视频信息
   let {view, danmaku, reply, favorite, coin, share, like} = stat;
@@ -62,6 +63,11 @@ export default async function bili(futureParams: FutureParams) {
   const dataProcessing = data => {
     return Number(data) >= TEN_THOUSAND ? (data / TEN_THOUSAND).toFixed(1) + "万" : data;
   };
+  // 限制时长 & 考虑分页视频情况
+  const query = querystring.parse(url);
+  const curPage: number = Number(query?.p) || 0;
+  const curDuration = pages?.[curPage]?.duration || duration;
+  const isLimitDuration = curDuration > config.biliMaxDuration
   // 格式化数据
   const combineContent =
     `\n点赞：${dataProcessing(like)} | 硬币：${dataProcessing(
@@ -72,7 +78,19 @@ export default async function bili(futureParams: FutureParams) {
     )} | 评论：${dataProcessing(reply)}\n` +
     `简介：${desc}`;
   let biliInfo = [segment.image(pic), `识别：哔哩哔哩：${title}`, combineContent]
-  session.send(biliInfo);
+  if (isLimitDuration) {
+    // 限制视频解析
+    const durationInMinutes = (curDuration / 60).toFixed(0);
+    // 加入限制视频解析说明
+    biliInfo.push(`\n-----------------------限制说明-----------------------\n当前视频时长约：${durationInMinutes}分钟，\n大于管理员设置的最大时长 ${config.biliMaxDuration / 60} 分钟！`)
+    session.send(biliInfo);
+    // 总结
+    const summary = await getBiliSummary(videoInfo, config.biliSession, config.gptEngineKey);
+    summary && session.send(summary);
+    return;
+  } else {
+    session.send(biliInfo);
+  }
   // 使用Node.js找到当前文件位置
   const currentPath = TMP_PATH + `${session.userId || session.guildId}/`;
   // 下载视频
@@ -93,10 +111,11 @@ export default async function bili(futureParams: FutureParams) {
       console.error(err);
       session.send("解析失败：合并视频失败，重试一下！");
     });
-  // 总结
-  const summary = await getBiliSummary(videoInfo, config.biliSession, config.gptEngineKey);
-  console.log("总结：" + summary)
-  summary && session.send(summary);
+  // 总结，设置了前提：默认60s以下的视频不会总结
+  if (duration >= config.summaryDuration) {
+    const summary = await getBiliSummary(videoInfo, config.biliSession, config.gptEngineKey);
+    summary && session.send(summary);
+  }
 };
 
 /**
