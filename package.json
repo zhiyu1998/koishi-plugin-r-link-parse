@@ -22,6 +22,7 @@
     "plugin"
   ],
   "peerDependencies": {
-    "koishi": "^4.12.8"
+    "koishi": "^4.17.11",
+    "axios": "^1.7.7"
   }
 }
