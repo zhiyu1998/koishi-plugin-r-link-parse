@@ -7,7 +7,7 @@ import * as path from 'path';
  * @param file
  * @returns {Promise<void>}
  */
-async function checkAndRemoveFile(file: string): Promise<void> {
+export async function checkAndRemoveFile(file: string): Promise<void> {
   try {
     await fs.promises.access(file);
     await fs.promises.unlink(file);
@@ -23,7 +23,7 @@ async function checkAndRemoveFile(file: string): Promise<void> {
  * @param dir
  * @returns {Promise<void>}
  */
-async function mkdirIfNotExists(dir: string): Promise<void> {
+export async function mkdirIfNotExists(dir: string): Promise<void> {
   try {
     await fs.promises.access(dir);
   } catch (err) {
@@ -39,7 +39,7 @@ async function mkdirIfNotExists(dir: string): Promise<void> {
  * 删除url多余查询参数
  * @param url
  */
-function stripQueryParams(url: string): string {
+export function stripQueryParams(url: string): string {
   const urlObj = new URL(url);
   urlObj.search = "";
   return urlObj.toString();
@@ -53,7 +53,7 @@ function stripQueryParams(url: string): string {
  * @param isProxy
  * @returns {Promise<unknown>}
  */
-async function downloadImg(img, dir, fileName = "", isProxy = false) {
+export async function downloadImg(img, dir, fileName = "", isProxy = false) {
   if (fileName === "") {
     fileName = img.split("/").pop();
   }
@@ -104,7 +104,7 @@ async function downloadImg(img, dir, fileName = "", isProxy = false) {
  * @param headers   覆盖头节点
  * @returns {Promise<unknown>}
  */
-async function downloadVideo(url: string, filePath: string, headers = null) {
+export async function downloadVideo(url: string, filePath: string, headers = null) {
   const groupPath = path.dirname(filePath);
 
   await mkdirIfNotExists(groupPath);
@@ -133,4 +133,27 @@ async function downloadVideo(url: string, filePath: string, headers = null) {
   }
 }
 
-export {checkAndRemoveFile, mkdirIfNotExists, stripQueryParams, downloadImg, downloadVideo}
+/**
+ * 重试 axios 请求
+ * @param requestFunction
+ * @param retries
+ * @param delay
+ * @returns {*}
+ */
+export async function retryAxiosReq(requestFunction, retries = 3, delay = 1000) {
+  try {
+    const response = await requestFunction();
+    if (!response.data) {
+      throw new Error('请求空数据');
+    }
+    return response.data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`[R插件][重试模块]重试中... (${ 3 - retries + 1 }/3) 次`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return retryAxiosReq(requestFunction, retries - 1, delay);
+    } else {
+      throw error;
+    }
+  }
+}

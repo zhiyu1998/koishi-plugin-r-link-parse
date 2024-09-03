@@ -1,6 +1,6 @@
 import {segment, Session} from 'koishi'
 import {mkdirIfNotExists} from "../utils/common";
-import {parseUrl, parseM3u8, mergeAcFileToMp4, downloadM3u8Videos} from '../utils/acfun-core'
+import {parseUrl, parseM3u8, mergeAcFileToMp4, downloadM3u8Videos} from '../utils/acfun'
 import {TMP_PATH} from "../constant";
 import {FutureParams} from "../types";
 
