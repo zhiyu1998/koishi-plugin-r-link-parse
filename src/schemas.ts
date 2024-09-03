@@ -1,7 +1,7 @@
 import { Schema } from "koishi";
 import { RConfig } from "./types";
 
-export const name = 'r-link-parse'
+export const name = 'koishi-plugin-r-link-parse'
 
 export const Config: Schema<RConfig> = Schema.object({
   biliSession: Schema.string().default("").description("哔哩哔哩的session，https://www.bilibili.com/read/cv12349604"),

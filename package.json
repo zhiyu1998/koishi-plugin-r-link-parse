@@ -1,30 +1,38 @@
 {
   "name": "koishi-plugin-r-link-parse",
   "description": "基于koishi机器人的链接分享解析视频、图片链接/小程序插件，支持：tiktok、bilibili、xhs、acfun！",
-  "homepage": "https://github.com/zhiyu1998",
+  "homepage": "https://github.com/zhiyu1998/koishi-plugin-r-link-parse",
   "author": "zhiyu1998",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhiyu1998/koishi-plugin-r-link-parse.git"
+    "url": "https://github.com/zhiyu1998/koishi-plugin-r-link-parse.git"
   },
-  "version": "1.0.4",
+  "version": "1.0.6",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
-    "lib",
-    "dist"
+    "lib"
   ],
   "license": "MIT",
-  "scripts": {},
   "keywords": [
-    "link",
-    "resolve",
-    "r-link-parse",
+    "chatbot",
     "koishi",
     "plugin"
   ],
+  "koishi": {
+    "description": {
+      "en": "Link Parse for Koishi",
+      "zh": "链接分享解析器"
+    },
+    "service": {
+      "implements": [
+        "adapter"
+      ]
+    }
+  },
   "peerDependencies": {
-    "koishi": "^4.17.11",
-    "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "lodash": "^4.17.21",
+    "koishi": "^4.17.11"
   }
 }
