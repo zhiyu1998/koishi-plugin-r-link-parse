@@ -22,6 +22,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Extract Tag Version
+        id: extract_tag
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Run custom bump script
+        run: npm run bump -- -v ${{ env.TAG_NAME }} -r
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
       - name: Publish to npm
         run: npm publish
         env:
