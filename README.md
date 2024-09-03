@@ -48,7 +48,9 @@ updated: 2024-09-03 14:03:36
 ## 🌸 贡 献
 发版流程：
 ```shell
+git tag <tag_name>
 
+git push origin --tags
 ```
 
 感谢以下贡献者：
